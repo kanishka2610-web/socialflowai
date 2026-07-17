@@ -92,74 +92,139 @@ View previously published posts and their status.
 
 ## 📊 Architecture Diagram
 
-                 React + Vite
-                      │
-              User Interface
-                      │
-                HTTP Webhook
-                      │
-                      ▼
-                  n8n Workflow
-        ┌──────────┼──────────┐
-        │          │          │
-        ▼          ▼          ▼
- Cloudinary    OpenAI/Gemini  Social Media API
-(Media Store) (AI Generation)  (Publishing)
-        │
-        └──────────────┬──────────────┘
-                       ▼
-                Status Response
-                       │
-                       ▼
-                   Frontend
-
+                                   ┌──────────────────────┐
+                    │    React + Vite UI   │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │    HTTP Webhook      │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │     n8n Workflow     │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │  Upload to Cloudinary│
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ OpenAI / Gemini AI   │
+                    │ Caption + Hashtags   │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Merge Media + Caption│
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Upload Video Node    │
+                    │ (Social Platform)    │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Publish Status       │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ React Frontend       │
+                    └──────────────────────┘
 ---
 
 ## 🔄 Workflow
 
-                User
-
-                  │
-
-        Create New Post
-
-                  │
-        ┌─────────┴─────────┐
-        │                   │
-Upload Video        Generate AI Poster
-        │                   │
-        └─────────┬─────────┘
-                  │
-          Enter Prompt
-                  │
-                  ▼
-        AI Generates Caption
-                  │
-        AI Generates Hashtags
-                  │
-                  ▼
-             Preview
-                  │
-                  ▼
-              Publish
-                  │
-                  ▼
-             Webhook
-                  │
-                  ▼
-            n8n Workflow
-                  │
-        ┌─────────┴─────────┐
-        │                   │
-   Cloudinary          AI Processing
-        │                   │
-        └─────────┬─────────┘
-                  ▼
-         Social Media Upload
-                  │
-                  ▼
-          Success Response
-          
+                    ┌──────────────────────┐             
+                    │         User         │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │   Create New Post    │
+                    └──────────┬───────────┘
+                               │
+                ┌──────────────┴──────────────┐
+                │                             │
+                ▼                             ▼
+      ┌──────────────────┐         ┌──────────────────┐
+      │   Upload Video   │         │ Generate AI Image│
+      └────────┬─────────┘         └────────┬─────────┘
+               │                            │
+               └────────────┬───────────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │     Enter Prompt     │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │ AI Generate Caption  │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │AI Generate Hashtags  │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │    Preview Content   │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │       Publish        │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │    HTTP Webhook      │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │     n8n Workflow     │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │ Upload to Cloudinary │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │ OpenAI / Gemini AI   │
+                 │ Caption + Hashtags   │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │ Merge Media + Caption│
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │ Upload Video / Image │
+                 │  Social Media Node   │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │ Publish Status       │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 ┌──────────────────────┐
+                 │ React + Vite UI      │
+                 └──────────────────────┘
 
 ## 📸 Screenshots
 
