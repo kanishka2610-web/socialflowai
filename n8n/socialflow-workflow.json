@@ -1,4 +1,5 @@
 {
+  "name": "SOCIALFLOW AI",
   "nodes": [
     {
       "parameters": {
@@ -6,132 +7,172 @@
         "path": "a938f841-0d71-4c98-aa06-31d533a11c73",
         "options": {}
       },
-      "id": "webhook-trigger-id",
-      "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
+      "typeVersion": 2.1,
       "position": [
-        250,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "amount": "={{ $json.scheduleTime ? (new Date($json.scheduleTime).getTime() - Date.now()) / 1000 : 0 }}",
-        "unit": "seconds"
-      },
-      "id": "wait-node-id",
-      "name": "Wait",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1,
-      "position": [
-        450,
-        420
-      ]
+        240,
+        80
+      ],
+      "id": "d43874f2-d091-4698-8416-3b1d15d2062b",
+      "name": "Webhook",
+      "webhookId": "a938f841-0d71-4c98-aa06-31d533a11c73"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Optimize the social media post titled \"{{ $json.title }}\" with caption \"{{ $json.caption }}\" for each channel (LinkedIn, Instagram, X, Facebook, YouTube). Return a JSON object with optimized captions and hashtags.",
-        "options": {}
-      },
-      "id": "ai-agent-id",
-      "name": "AI Agent",
-      "type": "n8n-nodes-base.agent",
-      "typeVersion": 1,
-      "position": [
-        650,
-        420
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "if (items[0].json.mediaUrls && items[0].json.mediaUrls.length > 0) {\n  // Trigger image upload/optimization\n  return [{ json: { ...items[0].json, status: 'processed' } }];\n} return items;"
-      },
-      "id": "code-node-id",
-      "name": "Code in JavaScript",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [
-        850,
-        420
-      ]
-    },
-    {
-      "parameters": {
-        "url": "=https://api.cloudinary.com/v1_1/socialflow/image/upload",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer cloudinary-token"
-            }
-          ]
+        "text": "={{ $json.body.title }}",
+        "options": {
+          "systemMessage": "You are a professional social media growth expert and viral content strategist.\n\nYour task is to generate ONE highly engaging, viral-ready caption and a set of viral hashtags based on a given post title.\n\n🎯 Input:\nPost Title: {{ $json.title }}\n\n🚀 Instructions:\n\n1. Generate ONE viral caption:\n   - Start with a strong hook (first line should grab attention)\n   - Make it engaging, relatable, and curiosity-driven\n   - Use simple, conversational language\n   - Add 2–4 relevant emojis (not excessive)\n   - Keep it between 2–5 lines\n   - Include a call-to-action (CTA) like:\n     - “Follow for more”\n     - “Save this”\n     - “What do you think?”\n\n2. Generate Viral Hashtags:\n   - Provide 12–18 hashtags\n   - Mix of:\n     - Trending hashtags\n     - Niche-specific hashtags\n     - Broad reach hashtags\n   - Keep all hashtags in ONE single line\n\n3. Output Format (STRICT):\n\nCaption:\n<your caption>\n\nHashtags:\n#tag1 #tag2 #tag3 #tag4 ...\n\n⚠️ Important:\n- Do NOT generate multiple captions\n- Do NOT add explanations\n- Do NOT use placeholders\n- Keep it natural and platform-neutral (Instagram, Facebook, X, Threads, YouTube)"
         }
       },
-      "id": "http-request-id",
-      "name": "HTTP Request",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4,
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
       "position": [
-        650,
-        180
-      ]
+        688,
+        208
+      ],
+      "id": "e436055e-a159-4016-b8b6-6a15c69c056a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json.output;\n\n// Split using \"Hashtags:\" keyword\nconst parts = output.split(\"Hashtags:\");\n\nconst captionPart = parts[0].replace(\"Caption:\", \"\").trim();\nconst hashtagsPart = parts[1].trim();\n\nreturn [\n  {\n    json: {\n      caption: captionPart,\n      hashtags: hashtagsPart\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        208
+      ],
+      "id": "655a555b-07ad-465f-a884-9bfb3b9e106d",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudinary.com/v1_1/b0ndoxzc/auto/upload",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "file"
+            },
+            {
+              "name": "upload_preset",
+              "value": "socialflow_upload"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        800,
+        -80
+      ],
+      "id": "41271b96-e770-4bc6-95db-60ea92fa864d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "uploadVideo",
+        "user": "saikanishka33",
+        "platform": [
+          "instagram",
+          "linkedin",
+          "x"
+        ],
+        "title": "={{ $json.caption }}",
+        "video": "={{ $json.secure_url }}",
+        "scheduledDate": "=",
+        "instagramMediaType": "REELS"
+      },
+      "type": "n8n-nodes-upload-post.uploadPost",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        80
+      ],
+      "id": "3a3a7379-25cd-47f0-813c-d397cc6bf014",
+      "name": "Upload a video",
+      "credentials": {
+        "uploadPostApi": {
+          "id": "vppPvlmnxNF9atvd",
+          "name": "Upload Post account"
+        }
+      }
     },
     {
       "parameters": {
         "mode": "combine",
-        "combinationMode": "multiplex"
+        "combineBy": "combineByPosition",
+        "options": {}
       },
-      "id": "merge-node-id",
-      "name": "Merge",
       "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
+      "typeVersion": 3.2,
       "position": [
-        1050,
-        300
-      ]
+        1264,
+        80
+      ],
+      "id": "d6b45618-d8a9-415c-af3b-b9d1d70b24ad",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        464,
+        208
+      ],
+      "id": "04e43fa5-2ded-4db5-9cea-cd312c98503d",
+      "name": "Wait",
+      "webhookId": "c0516a50-9c3b-4372-8e67-b937e6b7c4f0"
     },
     {
       "parameters": {
-        "binaryData": false,
-        "title": "={{ $json.title }}",
-        "description": "={{ $json.caption }}",
-        "tags": "socialflow, automation"
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
       },
-      "id": "upload-video-id",
-      "name": "Upload a video",
-      "type": "n8n-nodes-base.youtube",
-      "typeVersion": 1,
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
       "position": [
-        1250,
-        300
-      ]
+        768,
+        432
+      ],
+      "id": "ee340464-562d-4871-a49e-c9e70fd26691",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
     }
   ],
+  "pinData": {},
   "connections": {
     "Webhook": {
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Wait",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Wait",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait": {
-      "main": [
-        [
-          {
-            "node": "AI Agent",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -181,6 +222,42 @@
           }
         ]
       ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     }
-  }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5aa59709-0884-4e20-867a-6072c359722d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c8d1f258514753f649f5f06fe4c5635a99b26988255ca0bf93757934ac7d98f4"
+  },
+  "nodeGroups": [],
+  "id": "rtP5dawNjH23WTvB",
+  "tags": []
 }
