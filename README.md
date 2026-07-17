@@ -92,7 +92,7 @@ View previously published posts and their status.
 
 ## 📊 Architecture Diagram
 
-                                   ┌──────────────────────┐
+                    ┌──────────────────────┐
                     │    React + Vite UI   │
                     └──────────┬───────────┘
                                │
@@ -237,8 +237,6 @@ View previously published posts and their status.
 ### 3. AI Poster Generator
 ![Poster Generator](assets/screenshots/poster_generator.png)
 
-### 4. Create Post Wizard (Preview)
-![Create Post](assets/screenshots/create_post.png)
 
 ---
 
