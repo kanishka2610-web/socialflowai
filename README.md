@@ -10,32 +10,72 @@ SocialFlow AI is a high-performance, single-dashboard workspace that automates c
 
 ---
 
-## 🎯 Problem Statement
+## Problem Statement
 
-Modern social media management tools are often cluttered, expensive, and require complex configuration, oauth redirect loops, and manual logins. Content creators, marketing teams, and small brands require an immediate, authentication-free dashboard that is lightweight, allows instant image generation, and publishes or schedules post payloads seamlessly across platforms without leaving the workspace.
+In today's digital world, businesses, startups, and content creators need to publish engaging content across multiple social media platforms to stay connected with their audience. However, creating high-quality content involves using multiple tools for writing captions, designing promotional creatives, storing media, and manually publishing posts.
 
----
-
-## 💡 Solution
-
-SocialFlow AI simplifies social media management by offering:
-- **Instant Passwordless Onboarding**: Enter your name and brand name to immediately provision an active workspace.
-- **Multistep Post Composer**: Walk through title generation, copy rewriting via AI tools, custom media attachment, and real-time previews.
-- **AI Poster Generator**: Generate gorgeous graphics inside the composer using Pollinations.ai with selectable aspect-ratio mapping.
-- **Direct Automation Integration**: Fires structured JSON payloads directly to an n8n webhook, allowing off-loaded background scheduling and cross-posting.
-- **Ultra-Premium UI**: Fully responsive dark theme with sleek violet-to-magenta gradient accent controls.
+This fragmented workflow is time-consuming, repetitive, and inefficient, leading to reduced productivity and inconsistent branding. Small businesses and individual creators often lack affordable tools that combine AI-powered content creation with automated publishing in a single platform.
 
 ---
 
-## ✨ Features
+## Solution
 
-1. **Email-less Onboarding**: Start managing workspaces without entering credentials.
-2. **Publish Now vs. Schedule Later**: Flexible publish triggers with automated ISO 8601 formatting and timezone calculation.
-3. **AI Content Helpers**: Rewrite, improve, and generate caption copies.
-4. **AI Poster Engine**: High-fidelity text-to-image generator with square, horizontal, and vertical ratio bounds.
-5. **Interactive Phone Mockup Frame**: Displays post feeds inside a smartphone mock border (complete with home indicator, notch, and status bar) to review look and feel before dispatching.
-6. **Deployable and Ready**: Optimized SPA redirects ready for immediate deployment on Netlify.
+SocialFlow AI is an AI-powered social media content creation and publishing platform that streamlines the entire content workflow from one place.
 
+Users can upload a promotional video or generate marketing creatives using AI by simply describing what they want. The platform also generates engaging captions and relevant hashtags using AI, allowing users to review and edit the content before publishing.
+
+When the user clicks Publish, the request is sent to an n8n workflow that automates the publishing process.
+
+The workflow performs the following steps:
+
+Receives the request through a webhook.
+Uploads the media (video, and images if supported) to Cloudinary.
+Uses an AI model to generate optimized captions and hashtags.
+Combines the generated content with the uploaded media.
+Publishes the content to the selected social media platform(s).
+Returns the publishing status to the application.
+
+By combining AI-powered content generation with workflow automation, SocialFlow AI enables users to create professional social media content and publish it more efficiently from a single platform.
+
+
+## Objectives
+Simplify social media content creation.
+Reduce manual effort in publishing.
+Generate AI-powered captions and hashtags.
+Generate marketing posters using AI.
+Automate publishing through n8n.
+Provide a unified platform for creators and businesses.
+
+---
+
+## ✨ Key Features
+🤖 AI Caption Generation
+
+Generate engaging captions from a simple prompt.
+
+🎨 AI Image Generation
+
+Create marketing posters, promotional banners, and social media creatives from text prompts.
+
+🏷 AI Hashtag Generation
+
+Generate platform-relevant hashtags automatically.
+
+🎥 Video Upload
+
+Upload promotional videos for publishing.
+
+👀 Content Preview
+
+Review and edit generated content before publishing.
+
+🚀 Automated Publishing
+
+Publish content through an n8n-powered workflow.
+
+📋 Recent Posts Dashboard
+
+View previously published posts and their status.
 ---
 
 ## 🛠️ Tech Stack
@@ -52,20 +92,74 @@ SocialFlow AI simplifies social media management by offering:
 
 ## 📊 Architecture Diagram
 
-For a detailed view, see [docs/architecture.md](docs/architecture.md).
-
-```mermaid
-graph TD
-    A[React Web Client] -->|State Management| B[AppContext Provider]
-    B -->|Local Storage| C[Browser Cache]
-    B -->|HTTP POST| D[n8n Automation Webhook]
-    B -->|Image Query| E[Pollinations.ai CDN]
-    D -->|Staging Delay| F[n8n Wait Service]
-    F -->|Payload Optimizations| G[OpenAI GPT Model]
-    G -->|Dispatches| H[Social Platform APIs]
-```
+                 React + Vite
+                      │
+              User Interface
+                      │
+                HTTP Webhook
+                      │
+                      ▼
+                  n8n Workflow
+        ┌──────────┼──────────┐
+        │          │          │
+        ▼          ▼          ▼
+ Cloudinary    OpenAI/Gemini  Social Media API
+(Media Store) (AI Generation)  (Publishing)
+        │
+        └──────────────┬──────────────┘
+                       ▼
+                Status Response
+                       │
+                       ▼
+                   Frontend
 
 ---
+
+## 🔄 Workflow
+
+                User
+
+                  │
+
+        Create New Post
+
+                  │
+        ┌─────────┴─────────┐
+        │                   │
+Upload Video        Generate AI Poster
+        │                   │
+        └─────────┬─────────┘
+                  │
+          Enter Prompt
+                  │
+                  ▼
+        AI Generates Caption
+                  │
+        AI Generates Hashtags
+                  │
+                  ▼
+             Preview
+                  │
+                  ▼
+              Publish
+                  │
+                  ▼
+             Webhook
+                  │
+                  ▼
+            n8n Workflow
+                  │
+        ┌─────────┴─────────┐
+        │                   │
+   Cloudinary          AI Processing
+        │                   │
+        └─────────┬─────────┘
+                  ▼
+         Social Media Upload
+                  │
+                  ▼
+          Success Response
+          
 
 ## 📸 Screenshots
 
@@ -186,11 +280,34 @@ The automation workflow integrates directly with your self-hosted n8n platform.
 - **Analytics Sync Pipelines**: Poll platform dispatches to display engagement rate trends, follower counts, and CTR metrics.
 
 ---
+##
+👥 Target Users
+Small Businesses
+Startups
+Digital Marketing Agencies
+Content Creators
+Freelancers
+Social Media Managers
+
+## Future Scope
+Native image publishing (if not in the MVP)
+Content scheduling
+Brand Kit and reusable templates
+Multi-user collaboration
+Analytics dashboard
+AI content calendar
+
+##
+🎤 One-Line Pitch
+
+SocialFlow AI is an AI-powered social media content creation and publishing platform that helps businesses and creators generate marketing creatives, captions, and hashtags with AI, then automate publishing through n8n from a single, easy-to-use interface.
+
 
 ## 👥 Team Members
 
-- **kanishka** - Lead Developer & Systems Integrator
-
+- **kanishka** - UI designing & N8N Workflow Management
+- **Thanish** -  Research & Developement
+- **Venkata Hemanth** - UI desingning
 ---
 
 ## 📄 License
