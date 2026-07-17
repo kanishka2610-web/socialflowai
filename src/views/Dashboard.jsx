@@ -202,52 +202,23 @@ export default function Dashboard() {
           Manage every social platform, schedule automated workflows, and check intelligence from one dashboard.
         </p>
       </div>
-      {connectedCount > 0 && (
-        <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
-          <button
-            onClick={() => setActiveView('create-post')}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-xs font-bold shadow-md hover:scale-[1.02] cursor-pointer transition-all shrink-0"
-          >
-            <PlusCircle className="w-4 h-4" /> Create New Post
-          </button>
+      <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+        <button
+          onClick={() => setActiveView('create-post')}
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-xs font-bold shadow-md hover:scale-[1.02] cursor-pointer transition-all shrink-0"
+        >
+          <PlusCircle className="w-4 h-4" /> Create New Post
+        </button>
 
-          <button
-            onClick={() => setIsPosterOpen(true)}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-650 to-pink-600 hover:from-violet-750 hover:to-pink-700 text-white rounded-xl text-xs font-bold shadow-md hover:scale-[1.02] cursor-pointer transition-all shrink-0"
-          >
-            <Sparkles className="w-4 h-4 animate-pulse" /> Generate Poster
-          </button>
-        </div>
-      )}
+        <button
+          onClick={() => setIsPosterOpen(true)}
+          className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-violet-650 to-pink-600 hover:from-violet-750 hover:to-pink-700 text-white rounded-xl text-xs font-bold shadow-md hover:scale-[1.02] cursor-pointer transition-all shrink-0"
+        >
+          <Sparkles className="w-4 h-4 animate-pulse" /> Generate Poster
+        </button>
+      </div>
     </div>
   );
-
-  // If no connected accounts, show ONLY welcome message and a Connect Account button
-  if (connectedCount === 0) {
-    return (
-      <div className="space-y-8 pb-12">
-        {welcomeMessage}
-        
-        <div className="bg-white dark:bg-gray-900 border border-gray-150 dark:border-gray-800 p-8 py-16 rounded-3xl text-center shadow-soft max-w-xl mx-auto space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-500 flex items-center justify-center mx-auto shadow-sm">
-            <Link2 className="w-8 h-8" />
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-base font-extrabold text-gray-850 dark:text-gray-150">Connect Your Social Accounts</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto font-medium leading-relaxed">
-              To begin publishing and tracking performance, connect your social media profiles. We support LinkedIn, Instagram, Facebook, X, YouTube, and more.
-            </p>
-          </div>
-          <button
-            onClick={handleConnectAccounts}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-xs font-bold shadow-md hover:scale-[1.02] cursor-pointer transition-all"
-          >
-            Connect Account
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-8 pb-12">

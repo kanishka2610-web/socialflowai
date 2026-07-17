@@ -7,7 +7,7 @@ redirects = []
 [functions."*"]
 
 [build]
-publish = "C:\\Users\\kanis\\OneDrive\\Desktop\\socialmedia automation\\dist"
+publish = "C:\\Users\\kanis\\Downloads\\socialflowai-main\\dist"
 publishOrigin = "ui"
 commandOrigin = "ui"
 command = "npm run build"
