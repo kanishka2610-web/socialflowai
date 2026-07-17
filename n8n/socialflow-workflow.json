@@ -1,0 +1,186 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a938f841-0d71-4c98-aa06-31d533a11c73",
+        "options": {}
+      },
+      "id": "webhook-trigger-id",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.scheduleTime ? (new Date($json.scheduleTime).getTime() - Date.now()) / 1000 : 0 }}",
+        "unit": "seconds"
+      },
+      "id": "wait-node-id",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        450,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Optimize the social media post titled \"{{ $json.title }}\" with caption \"{{ $json.caption }}\" for each channel (LinkedIn, Instagram, X, Facebook, YouTube). Return a JSON object with optimized captions and hashtags.",
+        "options": {}
+      },
+      "id": "ai-agent-id",
+      "name": "AI Agent",
+      "type": "n8n-nodes-base.agent",
+      "typeVersion": 1,
+      "position": [
+        650,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "if (items[0].json.mediaUrls && items[0].json.mediaUrls.length > 0) {\n  // Trigger image upload/optimization\n  return [{ json: { ...items[0].json, status: 'processed' } }];\n} return items;"
+      },
+      "id": "code-node-id",
+      "name": "Code in JavaScript",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        850,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.cloudinary.com/v1_1/socialflow/image/upload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer cloudinary-token"
+            }
+          ]
+        }
+      },
+      "id": "http-request-id",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        650,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex"
+      },
+      "id": "merge-node-id",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        1050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "binaryData": false,
+        "title": "={{ $json.title }}",
+        "description": "={{ $json.caption }}",
+        "tags": "socialflow, automation"
+      },
+      "id": "upload-video-id",
+      "name": "Upload a video",
+      "type": "n8n-nodes-base.youtube",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Upload a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
