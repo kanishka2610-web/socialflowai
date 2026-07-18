@@ -78,6 +78,26 @@ Publish content through an n8n-powered workflow.
 View previously published posts and their status.
 ---
 
+## How SocialFlow AI differs
+
+• AI-first content creation
+Most social media management tools focus on scheduling and analytics. SocialFlow AI helps users create content by generating captions, hashtags, and marketing creatives with AI before publishing.
+
+• Unified workflow
+Instead of switching between AI writing tools, design tools, cloud storage, and social media platforms, users can perform the entire workflow in one application.
+
+• Workflow automation with n8n
+Publishing is powered by an n8n automation workflow, making the process modular and easy to extend with additional integrations and automations.
+
+• Simplified user experience
+The platform is designed with a straightforward workflow: create content, preview it, and publish it, making it approachable for small businesses and creators.
+
+• AI-generated marketing creatives
+Users can generate promotional posters from text prompts, reducing the need to use a separate design tool for basic marketing content.
+
+• Open and customizable architecture
+Because the backend uses n8n workflows, developers can customize and extend the publishing process with additional services or business-specific automations.
+
 ## 🛠️ Tech Stack
 
 - **Frontend Core**: React 18, Vite, JavaScript
