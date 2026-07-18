@@ -331,7 +331,7 @@ The automation workflow integrates directly with your self-hosted n8n platform.
 1. **JSON Payload Import**: Load the workflow schema directly into your editor using the JSON export file:
    📄 [socialflow-workflow.json](n8n/socialflow-workflow.json)
 2. **Setup Trigger**: Configure your webhook node path to listen on:
-   `https://kanishkaparuchuri.app.n8n.cloud/webhook/a938f841-0d71-4c98-aa06-31d533a11c73`
+   `https://saikanishka.app.n8n.cloud/webhook-test/a938f841-0d71-4c98-aa06-31d533a11c73`
 3. **Execution Delay**: The webhook handler inspects the incoming `scheduleTime` field to trigger an n8n Wait node, matching post dispatches to the exact minute.
 
 ---

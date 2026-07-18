@@ -67,7 +67,7 @@ export const AppProvider = ({ children }) => {
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem('sf_settings');
     const defaults = {
-      webhook_url: 'https://kanishkaparuchuri.app.n8n.cloud/webhook/a938f841-0d71-4c98-aa06-31d533a11c73',
+      webhook_url: 'https://saikanishka.app.n8n.cloud/webhook-test/a938f841-0d71-4c98-aa06-31d533a11c73',
       notifications_enabled: true,
       default_visibility: 'public',
       default_audience: 'everyone',
@@ -75,14 +75,12 @@ export const AppProvider = ({ children }) => {
     };
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed.webhook_url && parsed.webhook_url.includes('/webhook-test/')) {
-        parsed.webhook_url = parsed.webhook_url.replace('/webhook-test/', '/webhook/');
-      }
-      if (parsed.webhook_url === 'https://saikanishka.app.n8n.cloud/webhook/a938f841-0d71-4c98-aa06-31d533a11c73') {
-        parsed.webhook_url = 'https://kanishkaparuchuri.app.n8n.cloud/webhook/a938f841-0d71-4c98-aa06-31d533a11c73';
+      if (parsed.webhook_url === 'https://kanishkaparuchuri.app.n8n.cloud/webhook/a938f841-0d71-4c98-aa06-31d533a11c73' || 
+          parsed.webhook_url === 'https://saikanishka.app.n8n.cloud/webhook/a938f841-0d71-4c98-aa06-31d533a11c73') {
+        parsed.webhook_url = 'https://saikanishka.app.n8n.cloud/webhook-test/a938f841-0d71-4c98-aa06-31d533a11c73';
       }
       if (!parsed.webhook_url) {
-        parsed.webhook_url = 'https://kanishkaparuchuri.app.n8n.cloud/webhook/a938f841-0d71-4c98-aa06-31d533a11c73';
+        parsed.webhook_url = 'https://saikanishka.app.n8n.cloud/webhook-test/a938f841-0d71-4c98-aa06-31d533a11c73';
       }
       return { ...defaults, ...parsed };
     }
@@ -246,19 +244,23 @@ export const AppProvider = ({ children }) => {
     // Dispatch webhook to n8n if configured
     if (triggerWebhook && settings.webhook_url) {
       try {
-        const payload = {
-          title: postData.title,
-          caption: postData.caption || '',
-          selectedPlatforms: postData.selectedPlatforms,
-          scheduleTime: postData.publishOption === 'now' ? null : (postData.scheduleTime || null)
-        };
+        const formData = new FormData();
+        
+        // Find the video file
+        const selectedVideo = postData.mediaFiles?.find(f => f.rawFile && f.type?.startsWith('video/'))?.rawFile 
+          || postData.mediaFiles?.find(f => f.rawFile)?.rawFile 
+          || null;
+
+        const prompt = postData.caption || '';
+        const selectedPlatforms = postData.selectedPlatforms || [];
+
+        formData.append("file", selectedVideo);
+        formData.append("prompt", prompt);
+        formData.append("platforms", JSON.stringify(selectedPlatforms));
 
         const response = await fetch(settings.webhook_url, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
+          body: formData
         }).catch(e => {
           // Swallow net error locally to show success flow for mock webhooks
           console.warn('Webhook delivery warning (expected if mock endpoint is offline):', e);

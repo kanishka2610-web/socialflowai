@@ -5,7 +5,7 @@ SocialFlow AI communicates with the n8n automation engine via JSON payloads sent
 ## Endpoint Details
 
 - **Method**: `POST`
-- **Default Production URL**: `https://kanishkaparuchuri.app.n8n.cloud/webhook/a938f841-0d71-4c98-aa06-31d533a11c73`
+- **Default Production URL**: `https://saikanishka.app.n8n.cloud/webhook-test/a938f841-0d71-4c98-aa06-31d533a11c73`
 - **Content-Type**: `application/json`
 
 ---
